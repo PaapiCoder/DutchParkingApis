@@ -129,4 +129,12 @@ RESPONSE: HTTP 200 (OK)
     }
 ]
 ```
+# Database
+## Steps to create Database schema
 
+As we are using Mysql CE database for this application. Please Download the MySql Data base from online and follow below steps
+
+- Install the MySql on local Machine.
+- Start the MySql Database instance 
+- Create Schema using ```CREATE SCHEMA DutchParking```
+- Table will be automatically created once code run on the machine.
