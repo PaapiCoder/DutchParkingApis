@@ -7,12 +7,14 @@ import com.dutch.parking.model.ParkingMonitoringDetail;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class ParkingDetailDto {
 
 	@NotEmpty(message = "Licence number of the car is required")

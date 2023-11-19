@@ -66,6 +66,6 @@ public class ParkingController {
 	public ResponseEntity<List<ParkingMonitoringDetail>> loadLicenceDetails(@RequestBody ParkingDetailDto[] data) {
 		List<ParkingMonitoringDetail> insertedDetails = parkingMonitoringRepository.saveAll(Arrays.stream(data)
 				.toList().stream().map(ParkingDetailDto::toParkingMonitoringDetail).toList());
-		return new ResponseEntity<>(insertedDetails, HttpStatus.OK);
+		return new ResponseEntity<>(insertedDetails, HttpStatus.CREATED);
 	}
 }

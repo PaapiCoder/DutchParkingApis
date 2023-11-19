@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class ParkingService {
 
-	private ParkingRepository parkingRepository;
+	private final ParkingRepository parkingRepository;
 
-	private ParkingPriceRepository priceRepository;
+	private final ParkingPriceRepository priceRepository;
 
 	public ParkingService(ParkingRepository parkingRepository, ParkingPriceRepository priceRepository) {
 		this.parkingRepository = parkingRepository;
