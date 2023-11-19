@@ -12,6 +12,7 @@
 	<groupId>com.dutch.parking</groupId>
 	<artifactId>dutch-parking-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>Dutch parking APIs</name>
 	<description>Dutch parking system to register and un-register for street parking.</description>
 

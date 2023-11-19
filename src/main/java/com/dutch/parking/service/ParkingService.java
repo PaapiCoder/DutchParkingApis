@@ -37,7 +37,7 @@ public class ParkingService {
 				.toMap(PriceDetail::getStreetName, PriceDetail::getPrice));
 
 		BigDecimal parkingAmount = collect.get(updatedParkingDetails.getStreetName()).multiply(BigDecimal.valueOf(localDateTime.getMinute()));
-		return new ParkingResponseDto("You have successfully unregistered you vehicle. Total Time : "
+		return new ParkingResponseDto("You have successfully De-Registered you vehicle. Total Time : "
 				+ localDateTime.getMinute()+" min", parkingAmount);
 	}
 }
