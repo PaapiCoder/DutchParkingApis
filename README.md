@@ -138,3 +138,8 @@ As we are using Mysql CE database for this application. Please Download the MySq
 - Start the MySql Database instance 
 - Create Schema using ```CREATE SCHEMA DutchParking```
 - Table will be automatically created once code run on the machine.
+
+# Swagger link
+Start application and then click on below link to see swagger page.
+
+http://localhost:8080/swagger-ui/index.html

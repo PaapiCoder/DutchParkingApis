@@ -25,6 +25,13 @@ public class ParkingService {
 		this.priceRepository = priceRepository;
 	}
 
+	/**
+	 * Calculate the parking amount with help of registration and de-registered time and price for street
+	 * where licence number or vehicle is parked.
+	 *
+	 * @param parkingDetail parked vehicle detail based on licence number.
+	 * @return message with parking amount.
+	 */
 	public ParkingResponseDto calculateParkingCost(ParkingDetail parkingDetail) {
 		ParkingDetail updatedParkingDetails = parkingRepository.save(parkingDetail
 				.setParkingStatus(ParkingStatusEnum.PARKING_DE_REGISTERED.getValue())
