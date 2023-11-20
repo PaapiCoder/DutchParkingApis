@@ -1,4 +1,4 @@
-# Dutch Parking API's
+# Dutch Parking Application API's
 
 This is a simple Java / Maven / Spring Boot (version 3.1.5) based application that can be used to register and de-register the Parking of Vehicle based on there licence number. 
 And also administrator can also upload list of vehicle they monitored with monitoring vehicle.
