@@ -12,33 +12,20 @@ import com.dutch.parking.service.ParkingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.testcontainers.containers.MySQLContainer;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,21 +39,16 @@ class ParkingControllerTest {
 
 	@MockBean
 	private ParkingService parkingService;
-	@MockBean
-	private ParkingRepository parkingRepository;
-
-	@MockBean
-	private ParkingMonitoringRepository parkingMonitoringRepository;
 
 	@Test
 	void registerForParking() throws Exception {
 		//build request body
-		ParkingDetail input = ParkingDetailDto.builder()
+		ParkingDetailDto input = ParkingDetailDto.builder()
 				.licenceNumber("PB12x0007")
 				.streetName("Java Testing Street")
-				.build().toParkingDetails();
+				.build();
 		//call controller endpoints
-		Mockito.when(parkingRepository.save(ArgumentMatchers.any())).thenReturn(input);
+		Mockito.when(parkingService.registerParkingDetails(ArgumentMatchers.any())).thenReturn(input.toParkingDetails());
 		mockMvc.perform(post("/api/register").contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("utf-8")
 						.content(asJsonString(input))
@@ -89,10 +71,8 @@ class ParkingControllerTest {
 		pd.setRegisterDatetime(LocalDateTime.now().minusMinutes(5));
 		pd.setUnregisterDatetime(LocalDateTime.now());
 		Optional<ParkingDetail> op = Optional.of(pd);
-		Mockito.when(parkingRepository.findByLicenceNumberAndParkingStatus(ArgumentMatchers.any(), ArgumentMatchers.any()))
-				.thenReturn(op);
-		Mockito.when(parkingService.calculateParkingCost(pd)).thenReturn(new ParkingResponseDto("You have successfully De-Registered you vehicle. Total Time : "
-				+ 5+" min",BigDecimal.ZERO));
+		Mockito.when(parkingService.deRegisterParkingDetails(ArgumentMatchers.any())).thenReturn(new ParkingResponseDto
+				("You have successfully De-Registered you vehicle. Total Time : " + 5+" min",BigDecimal.ZERO));
 		mockMvc.perform(post("/api/unregister").contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("utf-8")
 						.content(asJsonString(input))
@@ -107,7 +87,7 @@ class ParkingControllerTest {
 		ParkingDetailDto[] input = {ParkingDetailDto.builder().licenceNumber("PB12x0007").streetName("Java").build(),
 									 ParkingDetailDto.builder().licenceNumber("PB12x0009").streetName("Azure").build()};
 		//call controller endpoints
-		Mockito.when(parkingMonitoringRepository.saveAll(ArgumentMatchers.any())).thenReturn(Arrays.stream(input)
+		Mockito.when(parkingService.uploadMonitoringDetails(ArgumentMatchers.any())).thenReturn(Arrays.stream(input)
 				.map(ParkingDetailDto::toParkingMonitoringDetail).toList());
 		mockMvc.perform(post("/api/loadParkingRecordList").contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("utf-8")

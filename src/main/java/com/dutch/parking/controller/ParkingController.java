@@ -2,14 +2,12 @@ package com.dutch.parking.controller;
 
 import com.dutch.parking.exceptions.AlreadyRegisteredException;
 import com.dutch.parking.exceptions.RegistrationNotFoundException;
-import com.dutch.parking.misc.ParkingStatusEnum;
 import com.dutch.parking.model.ParkingDetail;
 import com.dutch.parking.model.ParkingMonitoringDetail;
 import com.dutch.parking.model.dtos.ParkingDetailDto;
 import com.dutch.parking.model.dtos.ParkingResponseDto;
 import com.dutch.parking.model.dtos.ParkingUnRegistrationDto;
-import com.dutch.parking.repository.ParkingMonitoringRepository;
-import com.dutch.parking.repository.ParkingRepository;
+import com.dutch.parking.report.ReportDetails;
 import com.dutch.parking.service.ParkingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name = "Dutch Parking Application", description = "Dutch Parking APIs")
 @CrossOrigin(origins = "http://localhost:8081")
@@ -32,16 +29,9 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ParkingController {
 
-	private final ParkingRepository parkingRepository;
-
-	private final ParkingMonitoringRepository parkingMonitoringRepository;
-
 	private final ParkingService parkingService;
 
-	public ParkingController(ParkingRepository parkingRepository, ParkingMonitoringRepository parkingMonitoringRepository
-			, ParkingService parkingService) {
-		this.parkingRepository = parkingRepository;
-		this.parkingMonitoringRepository = parkingMonitoringRepository;
+	public ParkingController(ParkingService parkingService) {
 		this.parkingService = parkingService;
 	}
 
@@ -59,14 +49,7 @@ public class ParkingController {
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
 	@PostMapping("/register")
 	public ResponseEntity<ParkingDetail> register(@Valid @RequestBody ParkingDetailDto parkingDetail) throws AlreadyRegisteredException {
-		Optional<ParkingDetail> alreadyRegistered = parkingRepository
-				.findByLicenceNumberAndParkingStatus(parkingDetail.getLicenceNumber(),
-						ParkingStatusEnum.PARKING_REGISTERED.getValue());
-		if(alreadyRegistered.isPresent()){
-			throw new AlreadyRegisteredException("Licence Number is already registered at " + parkingDetail.getStreetName()+ " street, Please Unregister.");
-		}
-		ParkingDetail detail = parkingRepository.save(parkingDetail.toParkingDetails());
-		return new ResponseEntity<>(detail, HttpStatus.CREATED);
+		return new ResponseEntity<>(parkingService.registerParkingDetails(parkingDetail.toParkingDetails()), HttpStatus.CREATED);
 	}
 
 	/**
@@ -80,20 +63,11 @@ public class ParkingController {
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", content = {
 					@Content(schema = @Schema(implementation = ParkingUnRegistrationDto.class), mediaType = "application/json") }),
-			@ApiResponse(responseCode = "204", description = "Parking De-registered", content = {
-					@Content(schema = @Schema()) }),
-			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
+			@ApiResponse(responseCode = "404", description = "Parking De-registered", content = {
+					@Content(schema = @Schema()) }) })
 	@PostMapping("/unregister")
 	public ResponseEntity<ParkingResponseDto> unregister(@RequestBody ParkingUnRegistrationDto details) throws RegistrationNotFoundException {
-		Optional<ParkingDetail> parkingDetail = parkingRepository
-				.findByLicenceNumberAndParkingStatus(details.getLicenceNumber(),
-						ParkingStatusEnum.PARKING_REGISTERED.getValue());
-		if (parkingDetail.isEmpty()) {
-			throw new RegistrationNotFoundException("Parking registration is not found for licence number : "
-					+ details.getLicenceNumber()+" Or already De-registration");
-		}
-		ParkingResponseDto responseDto = parkingService.calculateParkingCost(parkingDetail.get());
-		return new ResponseEntity<>(responseDto, HttpStatus.OK);
+		return new ResponseEntity<>(parkingService.deRegisterParkingDetails(details.getLicenceNumber()), HttpStatus.OK);
 	}
 
 	/**
@@ -109,8 +83,22 @@ public class ParkingController {
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
 	@PostMapping("/loadParkingRecordList")
 	public ResponseEntity<List<ParkingMonitoringDetail>> loadLicenceDetails(@RequestBody ParkingDetailDto[] data) {
-		List<ParkingMonitoringDetail> insertedDetails = parkingMonitoringRepository.saveAll(Arrays.stream(data)
-				.toList().stream().map(ParkingDetailDto::toParkingMonitoringDetail).toList());
-		return new ResponseEntity<>(insertedDetails, HttpStatus.CREATED);
+		return new ResponseEntity<>(parkingService.uploadMonitoringDetails(Arrays.stream(data).map(ParkingDetailDto::
+				toParkingMonitoringDetail).toList()), HttpStatus.CREATED);
+	}
+
+	/**
+	 * Create Report for all the vehicles which are parked without any registration.
+	 *
+	 * @return return same as response.
+	 */
+	@Operation(summary = "List the Report data for which fine report will be generated.", tags = { "fetchReportData", "post" })
+	@ApiResponses({
+			@ApiResponse(responseCode = "201", content = {
+					@Content(schema = @Schema(implementation = ParkingDetailDto.class), mediaType = "application/json") }),
+			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
+	@GetMapping("/reportData")
+	public ResponseEntity<List<ReportDetails>> fetchReportData() {
+		return new ResponseEntity<>(parkingService.listUnregisteredVehicles(), HttpStatus.OK);
 	}
 }
