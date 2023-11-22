@@ -6,6 +6,7 @@ import com.dutch.parking.model.ParkingDetail;
 import com.dutch.parking.model.dtos.ParkingDetailDto;
 import com.dutch.parking.model.dtos.ParkingResponseDto;
 import com.dutch.parking.model.dtos.ParkingUnRegistrationDto;
+import com.dutch.parking.report.ReportDetails;
 import com.dutch.parking.repository.ParkingMonitoringRepository;
 import com.dutch.parking.repository.ParkingRepository;
 import com.dutch.parking.service.ParkingService;
@@ -24,8 +25,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -98,6 +101,23 @@ class ParkingControllerTest {
 				.andExpect(jsonPath("$[0].licenceNumber", Matchers.equalTo("PB12x0007")))
 				.andExpect(jsonPath("$[1].licenceNumber", Matchers.equalTo("PB12x0009")))
 				.andExpect(jsonPath("$", Matchers.hasSize(2)));
+	}
+	@Test
+	void fineReportListVehicleTest() throws Exception {
+		ReportDetails reportDetails0 = new ReportDetails("UP14X8976", "Java", LocalDateTime.now().minusMinutes(50));
+		ReportDetails reportDetails1 = new ReportDetails("PB13X8976", "Jakarta", LocalDateTime.now().minusMinutes(200));
+		ReportDetails reportDetails2 = new ReportDetails("MH15X8976", "Azure", LocalDateTime.now().minusDays(500));
+
+		List<ReportDetails> dataList = List.of(reportDetails1, reportDetails2, reportDetails0);
+
+		Mockito.when(parkingService.listUnregisteredVehicles()).thenReturn(dataList);
+
+		mockMvc.perform(get("/api/reportData").contentType(MediaType.APPLICATION_JSON)
+						.characterEncoding("utf-8")
+						.accept(MediaType.APPLICATION_JSON))
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", Matchers.hasSize(3)));
 	}
 
 	private String asJsonString(Object object) {
