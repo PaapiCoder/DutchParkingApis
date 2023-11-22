@@ -23,7 +23,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,6 +69,13 @@ class ParkingServiceTest {
 	}
 
 	@Test
+	void registerParkingDetailsEx() throws AlreadyRegisteredException {
+		when(parkingRepository.findByLicenceNumberAndParkingStatus(any(),any())).thenReturn(Optional.of(rpd));
+		assertThrows(AlreadyRegisteredException.class,
+				()-> when(parkingService.registerParkingDetails(rpd)).thenThrow(new AlreadyRegisteredException("")));
+	}
+
+	@Test
 	void deRegisterParkingDetails() throws RegistrationNotFoundException {
 		when(parkingRepository.save(any())).thenReturn(urpd);
 		Mockito.<Optional<ParkingDetail>>when(parkingRepository.findByLicenceNumberAndParkingStatus(any(),any()))
@@ -75,6 +84,14 @@ class ParkingServiceTest {
 		ParkingResponseDto result = parkingService.deRegisterParkingDetails("PB12X9002");
 		//Test
 		Assertions.assertEquals(result.getParkingAmount(),BigDecimal.valueOf(16));
+	}
+
+	@Test
+	void deRegisterParkingDetailsEx() throws RegistrationNotFoundException {
+		Mockito.<Optional<ParkingDetail>>when(parkingRepository.findByLicenceNumberAndParkingStatus(any(),any()))
+				.thenReturn(Optional.empty());
+		assertThrows(RegistrationNotFoundException.class,
+				()-> when(parkingService.deRegisterParkingDetails("")).thenThrow(new RegistrationNotFoundException("")));
 	}
 
 	@Test
