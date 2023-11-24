@@ -27,14 +27,14 @@ public class ParkingDetailDto {
 	public ParkingDetail toParkingDetails(){
 		return new ParkingDetail().setLicenceNumber(licenceNumber)
 				.setStreetName(streetName)
-				.setRegisterDatetime(LocalDateTime.now())
+				.setRegisterDatetime(LocalDateTime.now().withNano(0))
 				.setParkingStatus(ParkingStatusEnum.PARKING_REGISTERED.getValue());
 	}
 
 	public ParkingMonitoringDetail toParkingMonitoringDetail(){
 		return new ParkingMonitoringDetail().setLicenceNumber(licenceNumber)
 				.setStreetName(streetName)
-				.setRecordingDate(LocalDateTime.now());
+				.setRecordingDate(LocalDateTime.now().withNano(0));
 	}
 
 }

@@ -71,8 +71,8 @@ class ParkingControllerTest {
 		pd.setLicenceNumber(input.getLicenceNumber());
 		pd.setStreetName("Java Testing Street");
 		pd.setParkingStatus(ParkingStatusEnum.PARKING_DE_REGISTERED.getValue());
-		pd.setRegisterDatetime(LocalDateTime.now().minusMinutes(5));
-		pd.setUnregisterDatetime(LocalDateTime.now());
+		pd.setRegisterDatetime(LocalDateTime.now().withNano(0).minusMinutes(5));
+		pd.setUnregisterDatetime(LocalDateTime.now().withNano(0));
 		Optional<ParkingDetail> op = Optional.of(pd);
 		Mockito.when(parkingService.deRegisterParkingDetails(ArgumentMatchers.any())).thenReturn(new ParkingResponseDto
 				("You have successfully De-Registered you vehicle. Total Time : " + 5+" min",BigDecimal.ZERO));
@@ -104,9 +104,9 @@ class ParkingControllerTest {
 	}
 	@Test
 	void fineReportListVehicleTest() throws Exception {
-		ReportDetails reportDetails0 = new ReportDetails("UP14X8976", "Java", LocalDateTime.now().minusMinutes(50));
-		ReportDetails reportDetails1 = new ReportDetails("PB13X8976", "Jakarta", LocalDateTime.now().minusMinutes(200));
-		ReportDetails reportDetails2 = new ReportDetails("MH15X8976", "Azure", LocalDateTime.now().minusDays(500));
+		ReportDetails reportDetails0 = new ReportDetails("UP14X8976", "Java", LocalDateTime.now().withNano(0).minusMinutes(50));
+		ReportDetails reportDetails1 = new ReportDetails("PB13X8976", "Jakarta", LocalDateTime.now().withNano(0).minusMinutes(200));
+		ReportDetails reportDetails2 = new ReportDetails("MH15X8976", "Azure", LocalDateTime.now().withNano(0).minusDays(500));
 
 		List<ReportDetails> dataList = List.of(reportDetails1, reportDetails2, reportDetails0);
 
