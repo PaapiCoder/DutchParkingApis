@@ -102,30 +102,35 @@ Accept: application/json
 Content-Type: application/json
 
 Request
-[
-     {
-        "licenceNumber":1400,
-        "streetName":"Jakarta"
-    },
-    {
-        "licenceNumber":1900,
-        "streetName":"Java"
-    }
-]
+{ 
+    "parkingMonitoringDetails" : 
+    [
+        {
+            "licenceNumber":"PB12NV1231",
+            "streetName":"Jakarta",
+            "recordingDate":"2023-11-23T11:59:11.332Z"
+        },
+        {
+            "licenceNumber":"HP12X123",
+            "streetName":"Java",
+            "recordingDate":"2023-11-23T11:59:11.332Z"
+        }
+    ]
+}
 
 RESPONSE: HTTP 200 (OK)
 [
     {
-        "id": 102,
-        "licenceNumber": "1400",
+        "id": 402,
+        "licenceNumber": "PB12NV1231",
         "streetName": "Jakarta",
-        "recordingDate": "2023-11-19T14:47:56.20114"
+        "recordingDate": "2023-11-23T11:59:11.332"
     },
     {
-        "id": 103,
-        "licenceNumber": "1900",
+        "id": 403,
+        "licenceNumber": "HP12X123",
         "streetName": "Java",
-        "recordingDate": "2023-11-19T14:47:56.201175"
+        "recordingDate": "2023-11-23T11:59:11.332"
     }
 ]
 ```

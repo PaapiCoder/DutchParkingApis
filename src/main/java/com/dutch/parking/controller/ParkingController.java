@@ -5,6 +5,7 @@ import com.dutch.parking.exceptions.RegistrationNotFoundException;
 import com.dutch.parking.model.ParkingDetail;
 import com.dutch.parking.model.ParkingMonitoringDetail;
 import com.dutch.parking.model.dtos.ParkingDetailDto;
+import com.dutch.parking.model.dtos.ParkingMonitoringDto;
 import com.dutch.parking.model.dtos.ParkingResponseDto;
 import com.dutch.parking.model.dtos.ParkingUnRegistrationDto;
 import com.dutch.parking.report.ReportDetails;
@@ -82,9 +83,8 @@ public class ParkingController {
 					@Content(schema = @Schema(implementation = ParkingDetailDto.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
 	@PostMapping("/loadParkingRecordList")
-	public ResponseEntity<List<ParkingMonitoringDetail>> loadLicenceDetails(@RequestBody ParkingDetailDto[] data) {
-		return new ResponseEntity<>(parkingService.uploadMonitoringDetails(Arrays.stream(data).map(ParkingDetailDto::
-				toParkingMonitoringDetail).toList()), HttpStatus.CREATED);
+	public ResponseEntity<List<ParkingMonitoringDetail>> loadLicenceDetails(@RequestBody ParkingMonitoringDto data) {
+		return new ResponseEntity<>(parkingService.uploadMonitoringDetails(data.getParkingMonitoringDetails()), HttpStatus.CREATED);
 	}
 
 	/**
