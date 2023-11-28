@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Tag(name = "Dutch Parking Application", description = "Dutch Parking APIs")
@@ -92,12 +91,12 @@ public class ParkingController {
 	 *
 	 * @return return same as response.
 	 */
-	@Operation(summary = "List the Report data for which fine report will be generated.", tags = { "fetchReportData", "post" })
+	@Operation(summary = "List the Report data for which fine report will be generated.", tags = { "fetchReportData", "get" })
 	@ApiResponses({
 			@ApiResponse(responseCode = "201", content = {
 					@Content(schema = @Schema(implementation = ParkingDetailDto.class), mediaType = "application/json") }),
 			@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
-	@GetMapping("/reportData")
+	@GetMapping("/notRegisteredVehicleReport")
 	public ResponseEntity<List<ReportDetails>> fetchReportData() {
 		return new ResponseEntity<>(parkingService.listUnregisteredVehicles(), HttpStatus.OK);
 	}

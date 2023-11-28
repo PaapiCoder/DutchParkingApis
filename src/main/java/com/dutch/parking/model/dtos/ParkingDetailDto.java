@@ -30,11 +30,4 @@ public class ParkingDetailDto {
 				.setRegisterDatetime(LocalDateTime.now().withNano(0))
 				.setParkingStatus(ParkingStatusEnum.PARKING_REGISTERED.getValue());
 	}
-
-	public ParkingMonitoringDetail toParkingMonitoringDetail(){
-		return new ParkingMonitoringDetail().setLicenceNumber(licenceNumber)
-				.setStreetName(streetName)
-				.setRecordingDate(LocalDateTime.now().withNano(0));
-	}
-
 }

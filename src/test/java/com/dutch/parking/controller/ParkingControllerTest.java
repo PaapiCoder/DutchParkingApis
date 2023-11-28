@@ -12,6 +12,7 @@ import com.dutch.parking.service.ParkingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -42,6 +43,7 @@ class ParkingControllerTest {
 	private ParkingService parkingService;
 
 	@Test
+	@DisplayName("Register A vehicle for parking")
 	void registerForParking() throws Exception {
 		//build request body
 		ParkingDetailDto input = ParkingDetailDto.builder()
@@ -60,6 +62,7 @@ class ParkingControllerTest {
 	}
 
 	@Test
+	@DisplayName("De-register vehicle already parked and calculate parking fee.")
 	void deRegisterForParking() throws Exception {
 		//build request body
 		ParkingUnRegistrationDto input = new ParkingUnRegistrationDto();
@@ -83,6 +86,7 @@ class ParkingControllerTest {
 	}
 
 	@Test
+	@DisplayName("Load list of vehicles found during monitoring in to DB.")
 	void loadListVehicleTest() throws Exception {
 		//build request body
 		ParkingMonitoringDto monitoringDto = new ParkingMonitoringDto();
@@ -106,6 +110,7 @@ class ParkingControllerTest {
 				.andExpect(jsonPath("$", Matchers.hasSize(3)));
 	}
 	@Test
+	@DisplayName("Fetch all the data to generate fines for.")
 	void fineReportListVehicleTest() throws Exception {
 		ReportDetails reportDetails0 = new ReportDetails("UP14X8976", "Java", LocalDateTime.now().withNano(0).minusMinutes(50));
 		ReportDetails reportDetails1 = new ReportDetails("PB13X8976", "Jakarta", LocalDateTime.now().withNano(0).minusMinutes(200));
@@ -115,7 +120,7 @@ class ParkingControllerTest {
 
 		Mockito.when(parkingService.listUnregisteredVehicles()).thenReturn(dataList);
 
-		mockMvc.perform(get("/api/reportData").contentType(MediaType.APPLICATION_JSON)
+		mockMvc.perform(get("/api/notRegisteredVehicleReport").contentType(MediaType.APPLICATION_JSON)
 						.characterEncoding("utf-8")
 						.accept(MediaType.APPLICATION_JSON))
 				.andDo(print())

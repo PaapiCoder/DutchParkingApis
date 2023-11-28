@@ -53,7 +53,6 @@ class ParkingServiceTest {
 		PriceDetail pd2 = new PriceDetail().setPrice(BigDecimal.valueOf(8)).setStreetName("Azure");
 		PriceDetail pd3 = new PriceDetail().setPrice(BigDecimal.valueOf(10)).setStreetName("Jakarta");
 		priceList = List.of(pd1,pd2,pd3);
-
 	}
 
 	@Test
@@ -105,8 +104,8 @@ class ParkingServiceTest {
 	@DisplayName("De-Register vehicle for 8 minute on Jakarta street. Time 8 min and parking fee 0.8 EUR.")
 	void deRegisterParkingDetails2() throws RegistrationNotFoundException {
 		when(parkingRepository.save(any())).thenReturn(new ParkingDetail().setParkingStatus("BR13X9897").setStreetName("Jakarta")
-				.setRegisterDatetime(LocalDateTime.now().withNano(0).minusMinutes(8))
-				.setUnregisterDatetime(LocalDateTime.now().withNano(0)));
+				.setRegisterDatetime(LocalDateTime.of(2023,11, 28,15,7,1))
+				.setUnregisterDatetime(LocalDateTime.of(2023,11, 28,15,15,1)));
 		Mockito.<Optional<ParkingDetail>>when(parkingRepository.findByLicenceNumberAndParkingStatus(any(),any()))
 				.thenReturn(Optional.of((new ParkingDetail().setParkingStatus("BR13X9897").setStreetName("Jakarta")
 						.setRegisterDatetime(LocalDateTime.now().withNano(0).minusMinutes(8))
@@ -121,8 +120,8 @@ class ParkingServiceTest {
 	@DisplayName("De-Register vehicle for 25 minute on Jakarta street. Time 25 min and parking fee 2 EUR.")
 	void deRegisterParkingDetails3() throws RegistrationNotFoundException {
 		when(parkingRepository.save(any())).thenReturn(new ParkingDetail().setParkingStatus("BH13X9897").setStreetName("Azure")
-				.setRegisterDatetime(LocalDateTime.now().withNano(0).minusMinutes(25))
-				.setUnregisterDatetime(LocalDateTime.now().withNano(0)));
+				.setRegisterDatetime(LocalDateTime.of(2023,11, 28,10,10,1))
+				.setUnregisterDatetime(LocalDateTime.of(2023,11, 28,10,35,1)));
 		Mockito.<Optional<ParkingDetail>>when(parkingRepository.findByLicenceNumberAndParkingStatus(any(),any())).thenReturn(Optional.of(new ParkingDetail().setParkingStatus("BH13X9897").setStreetName("Azure")
 				.setRegisterDatetime(LocalDateTime.now().withNano(0).minusMinutes(25))
 				.setUnregisterDatetime(LocalDateTime.now().withNano(0))));
