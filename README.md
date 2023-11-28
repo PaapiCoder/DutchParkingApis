@@ -143,6 +143,14 @@ As we are using Mysql CE database for this application. Please Download the MySq
 - Start the MySql Database instance 
 - Create Schema using ```CREATE SCHEMA DutchParking```
 - Table will be automatically created once code run on the machine.
+- Then insert price details using below query
+```shell
+INSERT INTO `DutchParking`.`price_detail`
+(`id`,`price`,`street_name`)
+VALUES
+(1,15,'Java'),(2,13,'Jakarta'),(3,10,'Spring'),
+(4,10,'Azure'),(5,15,'Php'),(6,20,'Python');
+```
 
 # Swagger link
 Start application and then click on below link to see swagger page.
